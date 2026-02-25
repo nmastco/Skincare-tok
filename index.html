@@ -1,0 +1,547 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowTok — Top 10 Skincare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+--cream: #fdf6ee;
+--blush: #f2b8a0;
+--rose: #d4715a;
+--deep: #1a1014;
+--text: #3a2228;
+--muted: #9a7b82;
+--gold: #c8955c;
+}
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: var(–cream);
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
+overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+position: relative;
+height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+background: var(–deep);
+}
+
+header::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 80% 60% at 50% 60%, #6b2d3e 0%, #1a1014 60%);
+z-index: 0;
+}
+
+.noise {
+position: absolute;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.65’ numOctaves=‘3’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.08’/%3E%3C/svg%3E”);
+background-size: 200px;
+opacity: 0.4;
+z-index: 1;
+}
+
+.hero-tag {
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.7rem;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(–blush);
+opacity: 0.7;
+z-index: 2;
+margin-bottom: 1.5rem;
+animation: fadeUp 1s ease both;
+}
+
+.hero-title {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(3.5rem, 10vw, 8rem);
+font-weight: 700;
+color: var(–cream);
+line-height: 0.9;
+text-align: center;
+z-index: 2;
+animation: fadeUp 1s 0.15s ease both;
+}
+
+.hero-title em {
+font-style: italic;
+color: var(–blush);
+}
+
+.hero-subtitle {
+font-size: 1rem;
+color: var(–muted);
+margin-top: 1.5rem;
+z-index: 2;
+letter-spacing: 0.05em;
+animation: fadeUp 1s 0.3s ease both;
+}
+
+.scroll-hint {
+position: absolute;
+bottom: 2.5rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+z-index: 2;
+color: var(–muted);
+font-size: 0.7rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+animation: fadeUp 1s 0.6s ease both;
+}
+
+.scroll-line {
+width: 1px;
+height: 50px;
+background: linear-gradient(to bottom, var(–muted), transparent);
+animation: lineGrow 1.5s 1s ease-in-out infinite;
+}
+
+/* SECTION HEADER */
+.section-intro {
+padding: 5rem 2rem 2rem;
+text-align: center;
+max-width: 600px;
+margin: 0 auto;
+}
+
+.section-intro h2 {
+font-family: ‘Playfair Display’, serif;
+font-size: 2.5rem;
+font-weight: 400;
+line-height: 1.2;
+}
+
+.section-intro p {
+margin-top: 1rem;
+color: var(–muted);
+font-size: 0.95rem;
+line-height: 1.7;
+}
+
+/* PRODUCTS GRID */
+.products {
+max-width: 1100px;
+margin: 3rem auto;
+padding: 0 1.5rem;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 1.5rem;
+}
+
+.card {
+background: white;
+border-radius: 2px;
+overflow: hidden;
+position: relative;
+cursor: pointer;
+transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease;
+animation: fadeUp 0.6s ease both;
+}
+
+.card:hover {
+transform: translateY(-6px);
+box-shadow: 0 20px 60px rgba(26,16,20,0.15);
+}
+
+.card-rank {
+position: absolute;
+top: 1rem;
+left: 1rem;
+font-family: ‘Playfair Display’, serif;
+font-size: 3rem;
+font-weight: 700;
+color: rgba(26,16,20,0.08);
+line-height: 1;
+z-index: 1;
+pointer-events: none;
+}
+
+.card-img {
+width: 100%;
+height: 200px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 4rem;
+position: relative;
+overflow: hidden;
+}
+
+.card-body {
+padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.card-category {
+font-size: 0.65rem;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–rose);
+font-weight: 500;
+margin-bottom: 0.4rem;
+}
+
+.card-name {
+font-family: ‘Playfair Display’, serif;
+font-size: 1.3rem;
+font-weight: 400;
+line-height: 1.3;
+margin-bottom: 0.3rem;
+}
+
+.card-brand {
+font-size: 0.8rem;
+color: var(–muted);
+margin-bottom: 0.75rem;
+}
+
+.card-desc {
+font-size: 0.85rem;
+line-height: 1.65;
+color: #5a3e45;
+margin-bottom: 1rem;
+}
+
+.card-footer {
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-top: 1px solid rgba(242,184,160,0.3);
+padding-top: 0.85rem;
+}
+
+.card-price {
+font-size: 1rem;
+font-weight: 500;
+color: var(–gold);
+}
+
+.card-rating {
+display: flex;
+gap: 2px;
+font-size: 0.75rem;
+color: var(–rose);
+}
+
+.tiktok-badge {
+display: inline-flex;
+align-items: center;
+gap: 0.4rem;
+background: var(–deep);
+color: var(–cream);
+font-size: 0.65rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 0.3rem 0.7rem;
+border-radius: 100px;
+margin-bottom: 0.5rem;
+}
+
+/* CTA */
+.cta-section {
+margin: 5rem auto 6rem;
+text-align: center;
+padding: 0 2rem;
+}
+
+.cta-section h3 {
+font-family: ‘Playfair Display’, serif;
+font-size: 2rem;
+font-weight: 400;
+margin-bottom: 1.5rem;
+}
+
+.cta-section h3 em {
+font-style: italic;
+color: var(–rose);
+}
+
+.cta-btn {
+display: inline-flex;
+align-items: center;
+gap: 0.6rem;
+background: var(–deep);
+color: var(–cream);
+padding: 1rem 2.5rem;
+font-size: 0.85rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+border: none;
+cursor: pointer;
+transition: background 0.2s;
+font-family: ‘DM Sans’, sans-serif;
+}
+
+.cta-btn:hover { background: var(–rose); }
+
+/* FOOTER */
+footer {
+background: var(–deep);
+color: var(–muted);
+text-align: center;
+padding: 3rem 2rem;
+font-size: 0.8rem;
+letter-spacing: 0.05em;
+}
+
+footer .logo {
+font-family: ‘Playfair Display’, serif;
+font-size: 1.8rem;
+color: var(–cream);
+font-style: italic;
+margin-bottom: 0.75rem;
+}
+
+footer .socials {
+display: flex;
+gap: 1rem;
+justify-content: center;
+margin: 1rem 0;
+font-size: 0.7rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+}
+
+footer .socials a {
+color: var(–muted);
+text-decoration: none;
+transition: color 0.2s;
+}
+
+footer .socials a:hover { color: var(–blush); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(24px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lineGrow {
+0%, 100% { transform: scaleY(1); opacity: 1; }
+50% { transform: scaleY(0.4); opacity: 0.3; }
+}
+
+/* stagger cards */
+.card:nth-child(1) { animation-delay: 0.05s }
+.card:nth-child(2) { animation-delay: 0.1s }
+.card:nth-child(3) { animation-delay: 0.15s }
+.card:nth-child(4) { animation-delay: 0.2s }
+.card:nth-child(5) { animation-delay: 0.25s }
+.card:nth-child(6) { animation-delay: 0.3s }
+.card:nth-child(7) { animation-delay: 0.35s }
+.card:nth-child(8) { animation-delay: 0.4s }
+.card:nth-child(9) { animation-delay: 0.45s }
+.card:nth-child(10) { animation-delay: 0.5s }
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+
+<header>
+<div class="noise"></div>
+<div class="hero-tag">✦ FYP-Approved Skincare ✦</div>
+<h1 class="hero-title">Glow<em>Tok</em></h1>
+<p class="hero-subtitle">The internet's top 10 skincare obsessions, ranked.</p>
+<div class="scroll-hint">
+<div class="scroll-line"></div>
+scroll
+</div>
+</header>
+
+<!-- INTRO -->
+
+<div class="section-intro">
+<h2>Products going viral for a reason</h2>
+<p>Curated from millions of TikTok reviews, dermatologist recs, and real before-and-afters. These are the products worth every penny.</p>
+</div>
+
+<!-- PRODUCT CARDS -->
+
+<div class="products" id="products"></div>
+
+<!-- CTA -->
+
+<div class="cta-section">
+<h3>Want the <em>full routine?</em></h3>
+<p style="color:var(--muted); margin-bottom:1.5rem; font-size:0.9rem;">Follow for weekly drops, dupes, and honest reviews.</p>
+<button class="cta-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.18 8.18 0 0 0 4.78 1.52V7a4.85 4.85 0 0 1-1.01-.31z"/></svg>
+Follow @GlowTok
+</button>
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+<div class="logo">GlowTok</div>
+<div class="socials">
+<a href="#">TikTok</a>
+<a href="#">Instagram</a>
+<a href="#">YouTube</a>
+<a href="#">Pinterest</a>
+</div>
+<p>© 2025 GlowTok — Skincare content for educational purposes only. Always patch test.</p>
+</footer>
+
+<script>
+const products = [
+{
+rank: 1,
+category: "Moisturizer",
+name: "Barrier Repair Cream",
+brand: "La Roche-Posay · Cicaplast Baume B5",
+desc: "The TikTok-famous healing balm that rescues angry, stripped skin overnight. Dermatologists call it a \"skin bandage.\"",
+price: "$15",
+rating: 5,
+bg: "#fde8e0",
+emoji: "🧴"
+},
+{
+rank: 2,
+category: "Serum",
+name: "Hyaluronic Acid Serum",
+brand: "The Ordinary · 2% HA + B5",
+desc: "A budget-friendly hydration powerhouse. Plumps skin with multi-weight hyaluronic acid for dewy, glass-skin results.",
+price: "$9",
+rating: 5,
+bg: "#e0edf2",
+emoji: "💧"
+},
+{
+rank: 3,
+category: "Sunscreen",
+name: "Invisible Sunscreen SPF 50",
+brand: "ISDIN · Eryfotona Actinica",
+desc: "Zero white cast, zero excuses. This mineral-chemical hybrid melts right in and pairs perfectly under makeup.",
+price: "$55",
+rating: 5,
+bg: "#fff9e6",
+emoji: "☀️"
+},
+{
+rank: 4,
+category: "Retinol",
+name: "Granactive Retinoid 2%",
+brand: "The Ordinary · Emulsion",
+desc: "All the anti-aging results, none of the peeling. A gentler retinoid that even sensitive skin can get behind.",
+price: "$11",
+rating: 4,
+bg: "#f2e0f0",
+emoji: "✨"
+},
+{
+rank: 5,
+category: "Cleanser",
+name: "Gentle Foaming Cleanser",
+brand: "CeraVe · Hydrating Facial",
+desc: "The OG drugstore holy grail. Ceramides, niacinamide, and hyaluronic acid in a wash-off formula. Never strips.",
+price: "$18",
+rating: 5,
+bg: "#e0f0ea",
+emoji: "🫧"
+},
+{
+rank: 6,
+category: "Eye Cream",
+name: "Caffeine Eye Serum",
+brand: "The Ordinary · Caffeine Solution 5%",
+desc: "Puffy under-eyes, meet your match. Caffeine + EGCG visibly depuffs and brightens the most stubborn dark circles.",
+price: "$9",
+rating: 4,
+bg: "#e6e0f5",
+emoji: "👁️"
+},
+{
+rank: 7,
+category: "Exfoliant",
+name: "BHA Blackhead Power",
+brand: "COSRX · BHA Blackhead Power Liquid",
+desc: "Korean skincare's secret weapon. Betaine salicylate dissolves blackheads and refines pores without overdrying.",
+price: "$25",
+rating: 5,
+bg: "#f5ede0",
+emoji: "🌿"
+},
+{
+rank: 8,
+category: "Vitamin C",
+name: "15% Vitamin C + E Ferulic",
+brand: "Paula's Choice · C15 Super Booster",
+desc: "Clinical-grade brightening. This potent cocktail visibly fades hyperpigmentation and boosts SPF effectiveness.",
+price: "$65",
+rating: 5,
+bg: "#fff3e0",
+emoji: "🍊"
+},
+{
+rank: 9,
+category: "Sheet Mask",
+name: "Water Bomb Mask",
+brand: "Belif · True Cream Aqua Bomb",
+desc: "20 minutes for a week's worth of hydration. The bouncy texture and cooling sensation are genuinely addictive.",
+price: "$38",
+rating: 4,
+bg: "#e0f2f5",
+emoji: "💦"
+},
+{
+rank: 10,
+category: "Lip Treatment",
+name: "Peptide Lip Butter Balm",
+brand: "Summer Fridays · Lip Butter Balm",
+desc: "The #BeautyTok obsession with a cult following. Flavors, glossy finish, and actual lip conditioning in one.",
+price: "$22",
+rating: 5,
+bg: "#fce8ee",
+emoji: "💋"
+}
+];
+
+const grid = document.getElementById('products');
+
+products.forEach(p => {
+const stars = '★'.repeat(p.rating) + '☆'.repeat(5 - p.rating);
+grid.innerHTML += `
+<div class="card">
+<div class="card-img" style="background:${p.bg}">
+<span class="card-rank">${String(p.rank).padStart(2,'0')}</span>
+<span style="font-size:3.5rem; position:relative; z-index:2">${p.emoji}</span>
+</div>
+<div class="card-body">
+<div class="tiktok-badge">
+<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.18 8.18 0 0 0 4.78 1.52V7a4.85 4.85 0 0 1-1.01-.31z"/></svg>
+Viral Pick
+</div>
+<div class="card-category">${p.category}</div>
+<h3 class="card-name">${p.name}</h3>
+<p class="card-brand">${p.brand}</p>
+<p class="card-desc">${p.desc}</p>
+<div class="card-footer">
+<span class="card-price">${p.price}</span>
+<div class="card-rating">${stars}</div>
+</div>
+</div>
+</div>
+`;
+});
+</script>
+
+</body>
+</html>
