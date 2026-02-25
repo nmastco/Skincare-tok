@@ -1,546 +1,758 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GlowTok — Top 10 Skincare</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-:root {
---cream: #fdf6ee;
---blush: #f2b8a0;
---rose: #d4715a;
---deep: #1a1014;
---text: #3a2228;
---muted: #9a7b82;
---gold: #c8955c;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skin Signal — Data-Driven Skincare Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-background: var(–cream);
-color: var(–text);
-font-family: ‘DM Sans’, sans-serif;
-overflow-x: hidden;
-}
+    :root {
+      --bg:        #1a0010;
+      --bg2:       #220015;
+      --surface:   #2a0019;
+      --surface2:  #330020;
+      --border:    rgba(255, 80, 160, 0.12);
+      --border-hi: rgba(255, 120, 180, 0.4);
+      --pink:      #ff78b4;
+      --pink-soft: #ffadd4;
+      --pink-glow: rgba(255,120,180,0.08);
+      --rose:      #ff4d9e;
+      --burg:      #7a0040;
+      --burg-hi:   #a0005a;
+      --gold:      #ffd6a0;
+      --white:     #fff0f7;
+      --muted:     rgba(255,240,247,0.38);
+      --muted2:    rgba(255,240,247,0.13);
+      --font-serif: 'Playfair Display', serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+    }
 
-/* HEADER */
-header {
-position: relative;
-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-background: var(–deep);
-}
+    html { scroll-behavior: smooth; }
 
-header::before {
-content: ‘’;
-position: absolute;
-inset: 0;
-background: radial-gradient(ellipse 80% 60% at 50% 60%, #6b2d3e 0%, #1a1014 60%);
-z-index: 0;
-}
+    body {
+      font-family: var(--font-mono);
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+    }
 
-.noise {
-position: absolute;
-inset: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.65’ numOctaves=‘3’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.08’/%3E%3C/svg%3E”);
-background-size: 200px;
-opacity: 0.4;
-z-index: 1;
-}
+    /* grain overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.6;
+    }
 
-.hero-tag {
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.7rem;
-letter-spacing: 0.3em;
-text-transform: uppercase;
-color: var(–blush);
-opacity: 0.7;
-z-index: 2;
-margin-bottom: 1.5rem;
-animation: fadeUp 1s ease both;
-}
+    /* ambient glow blobs */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(120,0,60,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 85% 80%, rgba(80,0,40,0.3) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
 
-.hero-title {
-font-family: ‘Playfair Display’, serif;
-font-size: clamp(3.5rem, 10vw, 8rem);
-font-weight: 700;
-color: var(–cream);
-line-height: 0.9;
-text-align: center;
-z-index: 2;
-animation: fadeUp 1s 0.15s ease both;
-}
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 60px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(26,0,16,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
 
-.hero-title em {
-font-style: italic;
-color: var(–blush);
-}
+    .nav-logo {
+      font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700;
+      font-style: italic; color: var(--white); letter-spacing: 0.02em;
+    }
+    .nav-logo span { color: var(--pink); font-style: normal; }
 
-.hero-subtitle {
-font-size: 1rem;
-color: var(–muted);
-margin-top: 1.5rem;
-z-index: 2;
-letter-spacing: 0.05em;
-animation: fadeUp 1s 0.3s ease both;
-}
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--pink); }
 
-.scroll-hint {
-position: absolute;
-bottom: 2.5rem;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 0.5rem;
-z-index: 2;
-color: var(–muted);
-font-size: 0.7rem;
-letter-spacing: 0.2em;
-text-transform: uppercase;
-animation: fadeUp 1s 0.6s ease both;
-}
+    .nav-right { display: flex; align-items: center; gap: 18px; }
 
-.scroll-line {
-width: 1px;
-height: 50px;
-background: linear-gradient(to bottom, var(–muted), transparent);
-animation: lineGrow 1.5s 1s ease-in-out infinite;
-}
+    .live-badge { display: flex; align-items: center; gap: 7px; font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pink-soft); }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
 
-/* SECTION HEADER */
-.section-intro {
-padding: 5rem 2rem 2rem;
-text-align: center;
-max-width: 600px;
-margin: 0 auto;
-}
+    .nav-cta {
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--bg); background: var(--pink); padding: 8px 18px;
+      text-decoration: none; font-weight: 500; transition: background 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--pink-soft); transform: translateY(-1px); }
 
-.section-intro h2 {
-font-family: ‘Playfair Display’, serif;
-font-size: 2.5rem;
-font-weight: 400;
-line-height: 1.2;
-}
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 480px;
+      gap: 60px; align-items: center;
+      padding: 140px 60px 80px;
+      overflow: hidden;
+    }
 
-.section-intro p {
-margin-top: 1rem;
-color: var(–muted);
-font-size: 0.95rem;
-line-height: 1.7;
-}
+    /* diagonal grid lines */
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,120,180,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,120,180,0.04) 1px, transparent 1px);
+      background-size: 55px 55px;
+      mask-image: radial-gradient(ellipse at 30% 50%, black 10%, transparent 65%);
+    }
 
-/* PRODUCTS GRID */
-.products {
-max-width: 1100px;
-margin: 3rem auto;
-padding: 0 1.5rem;
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-gap: 1.5rem;
-}
+    .hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; animation: fadeUp 0.8s ease both; }
+    .eyebrow-pill {
+      font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--pink); border: 1px solid var(--border-hi);
+      background: var(--pink-glow); padding: 5px 14px;
+    }
+    .eyebrow-sub { font-size: 0.56rem; letter-spacing: 0.1em; color: var(--muted); }
 
-.card {
-background: white;
-border-radius: 2px;
-overflow: hidden;
-position: relative;
-cursor: pointer;
-transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease;
-animation: fadeUp 0.6s ease both;
-}
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 6vw, 6.5rem);
+      font-weight: 900; font-style: italic;
+      line-height: 0.95; letter-spacing: -0.01em;
+      color: var(--white); margin-bottom: 20px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+    .hero-title .pink { color: var(--pink); font-style: normal; }
+    .hero-title .dim  { color: var(--muted2); font-style: normal; }
 
-.card:hover {
-transform: translateY(-6px);
-box-shadow: 0 20px 60px rgba(26,16,20,0.15);
-}
+    .hero-sub {
+      font-size: 0.76rem; line-height: 1.95; color: var(--muted);
+      max-width: 490px; margin-bottom: 46px;
+      animation: fadeUp 0.8s ease 0.18s both;
+    }
+    .hero-sub strong { color: var(--white); font-weight: 400; }
 
-.card-rank {
-position: absolute;
-top: 1rem;
-left: 1rem;
-font-family: ‘Playfair Display’, serif;
-font-size: 3rem;
-font-weight: 700;
-color: rgba(26,16,20,0.08);
-line-height: 1;
-z-index: 1;
-pointer-events: none;
-}
+    .hero-stats { display: flex; gap: 36px; margin-bottom: 48px; animation: fadeUp 0.8s ease 0.26s both; }
+    .h-stat { border-left: 2px solid var(--border-hi); padding-left: 14px; }
+    .h-stat-num { font-family: var(--font-serif); font-size: 2rem; font-weight: 700; color: var(--pink); line-height: 1; }
+    .h-stat-label { font-size: 0.52rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
-.card-img {
-width: 100%;
-height: 200px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 4rem;
-position: relative;
-overflow: hidden;
-}
+    .hero-cta { display: flex; gap: 14px; animation: fadeUp 0.8s ease 0.34s both; }
+    .btn-primary {
+      background: var(--pink); color: var(--bg); padding: 13px 28px;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
+      transition: background 0.2s, transform 0.2s; display: inline-block;
+    }
+    .btn-primary:hover { background: var(--pink-soft); transform: translateY(-2px); }
+    .btn-ghost {
+      border: 1px solid var(--border); color: var(--muted); padding: 13px 26px;
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--border-hi); color: var(--pink); }
 
-.card-body {
-padding: 1.25rem 1.5rem 1.5rem;
-}
+    /* hero ranking card */
+    .hero-card {
+      background: var(--surface); border: 1px solid var(--border);
+      position: relative; z-index: 2;
+      animation: fadeUp 0.8s ease 0.22s both;
+      box-shadow: 0 40px 80px rgba(120,0,60,0.4), 0 0 0 1px rgba(255,120,180,0.06);
+    }
 
-.card-category {
-font-size: 0.65rem;
-letter-spacing: 0.25em;
-text-transform: uppercase;
-color: var(–rose);
-font-weight: 500;
-margin-bottom: 0.4rem;
-}
+    .card-top {
+      padding: 15px 20px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card-label { font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+    .card-live { display: flex; align-items: center; gap: 7px; font-size: 0.52rem; color: var(--pink-soft); }
 
-.card-name {
-font-family: ‘Playfair Display’, serif;
-font-size: 1.3rem;
-font-weight: 400;
-line-height: 1.3;
-margin-bottom: 0.3rem;
-}
+    .rank-list {}
+    .rank-row {
+      display: grid; grid-template-columns: 32px 1fr auto;
+      gap: 12px; align-items: center;
+      padding: 13px 20px; border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .rank-row:last-child { border-bottom: none; }
+    .rank-row:hover { background: var(--pink-glow); }
 
-.card-brand {
-font-size: 0.8rem;
-color: var(–muted);
-margin-bottom: 0.75rem;
-}
+    .rn { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--muted2); line-height: 1; font-style: italic; }
+    .rank-row:nth-child(1) .rn { color: var(--gold); }
+    .rank-row:nth-child(2) .rn { color: rgba(255,240,247,0.55); }
+    .rank-row:nth-child(3) .rn { color: rgba(255,140,100,0.7); }
 
-.card-desc {
-font-size: 0.85rem;
-line-height: 1.65;
-color: #5a3e45;
-margin-bottom: 1rem;
-}
+    .ri-name { font-size: 0.7rem; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .ri-brand { font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
-.card-footer {
-display: flex;
-align-items: center;
-justify-content: space-between;
-border-top: 1px solid rgba(242,184,160,0.3);
-padding-top: 0.85rem;
-}
+    .rr { text-align: right; }
+    .rr-score { font-size: 0.68rem; color: var(--pink); font-weight: 500; }
+    .rr-delta { font-size: 0.48rem; color: var(--muted); margin-top: 2px; }
+    .rr-delta.up { color: var(--pink-soft); }
+    .rr-delta.dn { color: #ff7070; }
 
-.card-price {
-font-size: 1rem;
-font-weight: 500;
-color: var(–gold);
-}
+    .card-foot {
+      padding: 11px 20px; border-top: 1px solid var(--border);
+      background: rgba(255,120,180,0.04);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cf-src { font-size: 0.48rem; color: var(--muted); letter-spacing: 0.1em; }
+    .cf-src span { color: var(--pink-soft); }
+    .cf-date { font-size: 0.48rem; color: var(--muted); }
 
-.card-rating {
-display: flex;
-gap: 2px;
-font-size: 0.75rem;
-color: var(–rose);
-}
+    /* ── TICKER ── */
+    .ticker {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--surface); padding: 11px 0; overflow: hidden;
+    }
+    .ticker-track { display: flex; animation: tickScroll 35s linear infinite; white-space: nowrap; }
+    .t-item {
+      display: flex; align-items: center; gap: 8px; padding: 0 28px;
+      font-size: 0.57rem; letter-spacing: 0.06em; color: var(--muted);
+      border-right: 1px solid var(--border); flex-shrink: 0;
+    }
+    .t-label { color: var(--white); }
+    .t-val { color: var(--pink); }
+    .t-val.dn { color: #ff8080; }
+    @keyframes tickScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-.tiktok-badge {
-display: inline-flex;
-align-items: center;
-gap: 0.4rem;
-background: var(–deep);
-color: var(–cream);
-font-size: 0.65rem;
-letter-spacing: 0.1em;
-text-transform: uppercase;
-padding: 0.3rem 0.7rem;
-border-radius: 100px;
-margin-bottom: 0.5rem;
-}
+    /* ── SHARED SECTION ── */
+    .section-wrap { position: relative; z-index: 1; padding: 100px 60px; }
 
-/* CTA */
-.cta-section {
-margin: 5rem auto 6rem;
-text-align: center;
-padding: 0 2rem;
-}
+    .section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 52px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
+    }
+    .s-eyebrow { font-size: 0.56rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--pink); margin-bottom: 8px; }
+    .s-title { font-family: var(--font-serif); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 700; font-style: italic; color: var(--white); line-height: 1.1; }
+    .s-title .faded { color: var(--muted2); font-style: normal; }
+    .s-count { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--muted); }
 
-.cta-section h3 {
-font-family: ‘Playfair Display’, serif;
-font-size: 2rem;
-font-weight: 400;
-margin-bottom: 1.5rem;
-}
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--surface); }
+    .how-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 1px; background: var(--border); }
+    .how-step {
+      background: var(--surface); padding: 36px 26px; position: relative; overflow: hidden; transition: background 0.3s;
+    }
+    .how-step:hover { background: var(--surface2); }
+    .how-step::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:transparent; transition:background 0.3s; }
+    .how-step:hover::before { background: var(--pink); }
 
-.cta-section h3 em {
-font-style: italic;
-color: var(–rose);
-}
+    .step-n { font-family:var(--font-serif); font-size:2.5rem; font-weight:900; font-style:italic; color:var(--border); line-height:1; margin-bottom:16px; }
+    .step-ico { font-size:1.2rem; margin-bottom:12px; display:block; }
+    .step-title { font-family:var(--font-serif); font-size:0.95rem; font-weight:700; font-style:italic; color:var(--white); margin-bottom:8px; }
+    .step-body { font-size:0.62rem; line-height:1.8; color:var(--muted); }
+    .step-tags { margin-top:14px; display:flex; flex-wrap:wrap; gap:5px; }
+    .s-tag { font-size:0.46rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--pink); border:1px solid var(--border-hi); background:var(--pink-glow); padding:3px 8px; }
 
-.cta-btn {
-display: inline-flex;
-align-items: center;
-gap: 0.6rem;
-background: var(–deep);
-color: var(–cream);
-padding: 1rem 2.5rem;
-font-size: 0.85rem;
-letter-spacing: 0.15em;
-text-transform: uppercase;
-border: none;
-cursor: pointer;
-transition: background 0.2s;
-font-family: ‘DM Sans’, sans-serif;
-}
+    /* ── GLAMBOT RANKINGS SECTION ── */
+    .rankings { background: var(--bg2); }
 
-.cta-btn:hover { background: var(–rose); }
+    .rankings-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 
-/* FOOTER */
-footer {
-background: var(–deep);
-color: var(–muted);
-text-align: center;
-padding: 3rem 2rem;
-font-size: 0.8rem;
-letter-spacing: 0.05em;
-}
+    .rc {
+      background: var(--surface); border: 1px solid var(--border);
+      transition: border-color 0.3s, transform 0.3s; cursor: pointer;
+      overflow: hidden;
+    }
+    .rc:hover { border-color: var(--border-hi); transform: translateY(-5px); }
 
-footer .logo {
-font-family: ‘Playfair Display’, serif;
-font-size: 1.8rem;
-color: var(–cream);
-font-style: italic;
-margin-bottom: 0.75rem;
-}
+    .rc-head {
+      padding: 20px 22px; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start;
+    }
+    .rc-cat { font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pink-soft); margin-bottom: 6px; }
+    .rc-title { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 700; font-style: italic; color: var(--white); line-height: 1.3; }
 
-footer .socials {
-display: flex;
-gap: 1rem;
-justify-content: center;
-margin: 1rem 0;
-font-size: 0.7rem;
-letter-spacing: 0.2em;
-text-transform: uppercase;
-}
+    .badge { font-size: 0.47rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 9px; border: 1px solid; white-space: nowrap; }
+    .badge.trending { color: var(--gold); border-color: rgba(255,214,160,0.3); background: rgba(255,214,160,0.06); }
+    .badge.hot { color: var(--pink); border-color: var(--border-hi); background: var(--pink-glow); }
+    .badge.new { color: var(--pink-soft); border-color: rgba(255,173,212,0.3); background: rgba(255,173,212,0.05); }
 
-footer .socials a {
-color: var(–muted);
-text-decoration: none;
-transition: color 0.2s;
-}
+    /* GLAMBOT LIST */
+    .glambot-list { padding: 8px 0; min-height: 280px; position: relative; }
 
-footer .socials a:hover { color: var(–blush); }
+    /* each item hidden by default — JS reveals them */
+    .gl-item {
+      display: grid; grid-template-columns: 28px 1fr auto;
+      gap: 14px; align-items: center;
+      padding: 14px 22px; border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(30px) scale(0.97);
+      transition: background 0.2s;
+    }
+    .gl-item:last-child { border-bottom: none; }
+    .gl-item.revealed { animation: glamReveal 1.2s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .gl-item:hover { background: var(--pink-glow); }
 
-/* ANIMATIONS */
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(24px); }
-to { opacity: 1; transform: translateY(0); }
-}
+    /* the dramatic slow glambot entrance */
+    @keyframes glamReveal {
+      0%   { opacity: 0; transform: translateY(40px) scale(0.94) rotateX(8deg); filter: blur(6px); }
+      30%  { opacity: 0.4; filter: blur(2px); }
+      60%  { opacity: 0.85; transform: translateY(-4px) scale(1.01); filter: blur(0); }
+      80%  { transform: translateY(2px) scale(0.995); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
 
-@keyframes lineGrow {
-0%, 100% { transform: scaleY(1); opacity: 1; }
-50% { transform: scaleY(0.4); opacity: 0.3; }
-}
+    /* rank number shimmer on reveal */
+    .gl-num {
+      font-family: var(--font-serif); font-size: 1.5rem; font-weight: 900; font-style: italic;
+      color: var(--muted2); line-height: 1;
+    }
+    .gl-item:nth-child(1) .gl-num { color: var(--gold); text-shadow: 0 0 20px rgba(255,214,160,0.5); }
+    .gl-item:nth-child(2) .gl-num { color: rgba(255,240,247,0.6); }
+    .gl-item:nth-child(3) .gl-num { color: rgba(210,140,100,0.75); }
 
-/* stagger cards */
-.card:nth-child(1) { animation-delay: 0.05s }
-.card:nth-child(2) { animation-delay: 0.1s }
-.card:nth-child(3) { animation-delay: 0.15s }
-.card:nth-child(4) { animation-delay: 0.2s }
-.card:nth-child(5) { animation-delay: 0.25s }
-.card:nth-child(6) { animation-delay: 0.3s }
-.card:nth-child(7) { animation-delay: 0.35s }
-.card:nth-child(8) { animation-delay: 0.4s }
-.card:nth-child(9) { animation-delay: 0.45s }
-.card:nth-child(10) { animation-delay: 0.5s }
-</style>
+    .gl-name { font-size: 0.72rem; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .gl-brand { font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
+    .gl-right { text-align: right; }
+    .gl-score { font-size: 0.68rem; color: var(--pink); font-weight: 500; }
+    .gl-delta { font-size: 0.48rem; color: var(--muted); margin-top: 2px; }
+    .gl-delta.up { color: var(--pink-soft); }
+
+    /* replay button */
+    .glambot-ctrl {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px; border-top: 1px solid var(--border);
+      background: rgba(255,120,180,0.04);
+    }
+    .replay-btn {
+      font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--pink); background: none; border: 1px solid var(--border-hi);
+      padding: 6px 16px; cursor: pointer; font-family: var(--font-mono);
+      transition: background 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .replay-btn:hover { background: var(--pink-glow); }
+
+    .rc-foot {
+      padding: 12px 22px; display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border); background: rgba(0,0,0,0.2);
+    }
+    .rc-dots { display: flex; gap: 5px; }
+    .rc-dot { font-size: 0.44rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 2px 7px; }
+    .rc-watch { font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pink); text-decoration: none; transition: color 0.2s; }
+    .rc-watch:hover { color: var(--pink-soft); }
+
+    /* ── DATA SOURCES ── */
+    .sources { background: var(--surface); }
+    .src-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 1px; background: var(--border); margin-top: 48px; }
+    .src-card { background: var(--surface); padding: 32px 24px; transition: background 0.3s; }
+    .src-card:hover { background: var(--surface2); }
+    .src-ico { font-size: 1.4rem; margin-bottom: 12px; display: block; }
+    .src-name { font-family: var(--font-serif); font-size: 0.92rem; font-weight: 700; font-style: italic; color: var(--white); margin-bottom: 7px; }
+    .src-desc { font-size: 0.59rem; line-height: 1.75; color: var(--muted); }
+    .src-metric { margin-top: 12px; font-size: 0.54rem; color: var(--pink-soft); letter-spacing: 0.1em; }
+
+    /* ── CTA ── */
+    .cta {
+      padding: 110px 60px; background: var(--bg);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+      position: relative; z-index: 1; overflow: hidden;
+    }
+    .cta-bg-text {
+      position: absolute; font-family: var(--font-serif); font-size: 18vw; font-weight: 900;
+      font-style: italic; color: rgba(255,120,180,0.025); line-height: 1;
+      top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; white-space: nowrap;
+    }
+    .cta::before { content:''; position:absolute; left:0;top:0;bottom:0; width:3px; background:linear-gradient(to bottom,transparent,var(--pink),transparent); }
+
+    .cta-title { font-family: var(--font-serif); font-size: clamp(2.5rem,4.5vw,4.2rem); font-weight: 900; font-style: italic; letter-spacing: -0.01em; color: var(--white); line-height: 1.05; margin-bottom: 18px; }
+    .cta-title .accent { color: var(--pink); font-style: normal; }
+    .cta-body { font-size: 0.74rem; line-height: 1.9; color: var(--muted); margin-bottom: 36px; }
+    .cta-body strong { color: var(--white); font-weight: 400; }
+
+    .email-form { display: flex; flex-direction: column; gap: 12px; }
+    .form-row { display: flex; }
+    .email-input {
+      flex: 1; background: var(--surface); border: 1px solid var(--border); border-right: none;
+      padding: 13px 17px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--white); outline: none; transition: border-color 0.2s;
+    }
+    .email-input::placeholder { color: var(--muted); }
+    .email-input:focus { border-color: var(--border-hi); }
+    .email-btn {
+      background: var(--pink); color: var(--bg); border: none; padding: 13px 22px;
+      font-family: var(--font-mono); font-size: 0.67rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .email-btn:hover { background: var(--pink-soft); }
+    .form-note { font-size: 0.52rem; letter-spacing: 0.07em; color: var(--muted); }
+
+    .format-list { display: flex; flex-direction: column; gap: 1px; position: relative; z-index: 2; }
+    .format-item {
+      display: flex; align-items: center; gap: 18px; padding: 17px 22px;
+      background: var(--surface); border: 1px solid var(--border); border-bottom: none; transition: all 0.2s;
+    }
+    .format-item:last-child { border-bottom: 1px solid var(--border); }
+    .format-item:hover { background: var(--surface2); border-color: var(--border-hi); }
+    .f-ico { font-size: 1rem; width: 30px; text-align: center; flex-shrink: 0; }
+    .f-info { flex: 1; }
+    .f-name { font-family: var(--font-serif); font-size: 0.88rem; font-weight: 700; font-style: italic; color: var(--white); margin-bottom: 3px; }
+    .f-desc { font-size: 0.56rem; color: var(--muted); line-height: 1.5; }
+    .f-freq { font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pink-soft); white-space: nowrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 48px 60px; position: relative; z-index: 1;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .f-logo { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 700; font-style: italic; color: var(--white); }
+    .f-logo span { color: var(--pink); font-style: normal; }
+    .f-tag { font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+    .f-links { display: flex; gap: 28px; }
+    .f-links a { font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .f-links a:hover { color: var(--pink); }
+    .f-copy { font-size: 0.52rem; color: var(--muted); text-align: right; }
+    .f-note { font-size: 0.46rem; color: rgba(255,240,247,0.12); margin-top: 4px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1100px){
+      .hero { grid-template-columns:1fr; padding:120px 40px 60px; }
+      .hero-card { display:none; }
+      .how-grid { grid-template-columns:repeat(2,1fr); }
+      .rankings-grid { grid-template-columns:1fr; }
+      .src-grid { grid-template-columns:repeat(2,1fr); }
+      .cta { grid-template-columns:1fr; padding:80px 40px; }
+      nav { padding:0 30px; }
+      .nav-links { display:none; }
+      .section-wrap { padding:80px 40px; }
+      footer { flex-direction:column; gap:28px; text-align:center; padding:40px; }
+      .f-links { flex-wrap:wrap; justify-content:center; }
+    }
+    @media(max-width:600px){
+      .how-grid { grid-template-columns:1fr; }
+      .src-grid { grid-template-columns:1fr; }
+      .hero-stats { flex-wrap:wrap; gap:22px; }
+    }
+  </style>
 </head>
 <body>
 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><em>Skin</em><span>Signal</span></div>
+  <div class="nav-links">
+    <a href="#rankings">Rankings</a>
+    <a href="#how">How It Works</a>
+    <a href="#sources">Data Sources</a>
+  </div>
+  <div class="nav-right">
+    <div class="live-badge"><div class="live-dot"></div> Live Data</div>
+    <a href="https://www.tiktok.com/@skinsignal" target="_blank" class="nav-cta">↗ TikTok</a>
+  </div>
+</nav>
+
 <!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">
+      <span class="eyebrow-pill">↗ Daily on TikTok</span>
+      <span class="eyebrow-sub">Real data. Zero opinions.</span>
+    </div>
+    <h1 class="hero-title">
+      Skincare<br>
+      ranked by<br>
+      <span class="pink">the numbers</span>
+    </h1>
+    <p class="hero-sub">
+      <strong>Skin Signal</strong> ranks the best skincare products daily — sourced from Amazon bestseller data,
+      Sephora sales rankings, Google Trends, Reddit community sentiment,
+      and published research. <strong>No sponsorships. No opinions. Just signal.</strong>
+    </p>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">5+</div><div class="h-stat-label">Live Data Sources</div></div>
+      <div class="h-stat"><div class="h-stat-num">Daily</div><div class="h-stat-label">New Rankings</div></div>
+      <div class="h-stat"><div class="h-stat-num">$0</div><div class="h-stat-label">Sponsored Posts</div></div>
+    </div>
+    <div class="hero-cta">
+      <a href="https://www.tiktok.com/@skinsignal" target="_blank" class="btn-primary">Follow on TikTok →</a>
+      <a href="#rankings" class="btn-ghost">See Rankings</a>
+    </div>
+  </div>
 
-<header>
-<div class="noise"></div>
-<div class="hero-tag">✦ FYP-Approved Skincare ✦</div>
-<h1 class="hero-title">Glow<em>Tok</em></h1>
-<p class="hero-subtitle">The internet's top 10 skincare obsessions, ranked.</p>
-<div class="scroll-hint">
-<div class="scroll-line"></div>
-scroll
+  <!-- HERO RANKING CARD -->
+  <div class="hero-card">
+    <div class="card-top">
+      <span class="card-label">// Today's Top 5 — Moisturizers</span>
+      <div class="card-live"><div class="live-dot"></div> Updated today</div>
+    </div>
+    <div class="rank-list">
+      <div class="rank-row"><div class="rn">1</div><div><div class="ri-name">CeraVe Moisturizing Cream</div><div class="ri-brand">CeraVe · Dry Skin</div></div><div class="rr"><div class="rr-score">98.4</div><div class="rr-delta up">▲ 2.1</div></div></div>
+      <div class="rank-row"><div class="rn">2</div><div><div class="ri-name">La Roche-Posay Toleriane</div><div class="ri-brand">La Roche-Posay · Sensitive</div></div><div class="rr"><div class="rr-score">96.1</div><div class="rr-delta up">▲ 0.8</div></div></div>
+      <div class="rank-row"><div class="rn">3</div><div><div class="ri-name">Neutrogena Hydro Boost</div><div class="ri-brand">Neutrogena · All Types</div></div><div class="rr"><div class="rr-score">94.7</div><div class="rr-delta dn">▼ 0.3</div></div></div>
+      <div class="rank-row"><div class="rn">4</div><div><div class="ri-name">First Aid Beauty Ultra Repair</div><div class="ri-brand">First Aid Beauty · Eczema</div></div><div class="rr"><div class="rr-score">91.2</div><div class="rr-delta up">▲ 3.4</div></div></div>
+      <div class="rank-row"><div class="rn">5</div><div><div class="ri-name">Vanicream Moisturizing Cream</div><div class="ri-brand">Vanicream · Fragrance-Free</div></div><div class="rr"><div class="rr-score">89.8</div><div class="rr-delta up">▲ 1.2</div></div></div>
+    </div>
+    <div class="card-foot">
+      <div class="cf-src">Sources: <span>Amazon · Sephora · Trends</span></div>
+      <div class="cf-date">Feb 25, 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="t-item"><span class="t-label">SPF Trend</span><span class="t-val">▲ 34% YoY</span></div>
+    <div class="t-item"><span class="t-label">Retinol Search Vol</span><span class="t-val">2.4M/mo</span></div>
+    <div class="t-item"><span class="t-label">CeraVe Amazon</span><span class="t-val">#1 Moisturizer</span></div>
+    <div class="t-item"><span class="t-label">Niacinamide Reddit</span><span class="t-val">▲ 18%</span></div>
+    <div class="t-item"><span class="t-label">Glass Skin TikTok</span><span class="t-val">9.2B views</span></div>
+    <div class="t-item"><span class="t-label">Vitamin C Sephora</span><span class="t-val">#3 Serum</span></div>
+    <div class="t-item"><span class="t-label">Slugging Searches</span><span class="t-val dn">▼ 8%</span></div>
+    <div class="t-item"><span class="t-label">Peptide Products</span><span class="t-val">▲ 41%</span></div>
+    <div class="t-item"><span class="t-label">AHA/BHA Market</span><span class="t-val">$1.2B 2025</span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="t-item"><span class="t-label">SPF Trend</span><span class="t-val">▲ 34% YoY</span></div>
+    <div class="t-item"><span class="t-label">Retinol Search Vol</span><span class="t-val">2.4M/mo</span></div>
+    <div class="t-item"><span class="t-label">CeraVe Amazon</span><span class="t-val">#1 Moisturizer</span></div>
+    <div class="t-item"><span class="t-label">Niacinamide Reddit</span><span class="t-val">▲ 18%</span></div>
+    <div class="t-item"><span class="t-label">Glass Skin TikTok</span><span class="t-val">9.2B views</span></div>
+    <div class="t-item"><span class="t-label">Vitamin C Sephora</span><span class="t-val">#3 Serum</span></div>
+    <div class="t-item"><span class="t-label">Slugging Searches</span><span class="t-val dn">▼ 8%</span></div>
+    <div class="t-item"><span class="t-label">Peptide Products</span><span class="t-val">▲ 41%</span></div>
+    <div class="t-item"><span class="t-label">AHA/BHA Market</span><span class="t-val">$1.2B 2025</span></div>
+  </div>
 </div>
-</header>
 
-<!-- INTRO -->
+<!-- HOW IT WORKS -->
+<section class="section-wrap how" id="how">
+  <div class="section-header">
+    <div>
+      <div class="s-eyebrow">// The System</div>
+      <h2 class="s-title">How rankings <span class="faded">are built</span></h2>
+    </div>
+    <span class="s-count">5-step pipeline → 1 daily video</span>
+  </div>
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="step-n">01</div><span class="step-ico">📡</span>
+      <div class="step-title">Data Collection</div>
+      <p class="step-body">Live rankings, bestseller lists, search volumes, and social mentions pulled daily from every major platform and retailer.</p>
+      <div class="step-tags"><span class="s-tag">Amazon</span><span class="s-tag">Sephora</span><span class="s-tag">Trends</span></div>
+    </div>
+    <div class="how-step">
+      <div class="step-n">02</div><span class="step-ico">⚗️</span>
+      <div class="step-title">Signal Scoring</div>
+      <p class="step-body">Products scored across sales rank, search volume, community sentiment, and ingredient research — composited into a Signal Score.</p>
+      <div class="step-tags"><span class="s-tag">Weighted</span><span class="s-tag">Multi-source</span></div>
+    </div>
+    <div class="how-step">
+      <div class="step-n">03</div><span class="step-ico">✍️</span>
+      <div class="step-title">Script Generation</div>
+      <p class="step-body">A data-backed script is written for each ranked list — with real numbers, trends, and cited sources. No filler. No fluff.</p>
+      <div class="step-tags"><span class="s-tag">AI-Assisted</span><span class="s-tag">Fact-Checked</span></div>
+    </div>
+    <div class="how-step">
+      <div class="step-n">04</div><span class="step-ico">🎬</span>
+      <div class="step-title">Video Production</div>
+      <p class="step-body">Branded slides with animated stats assembled automatically. ElevenLabs voiceover, FFmpeg assembly — fully faceless.</p>
+      <div class="step-tags"><span class="s-tag">ElevenLabs</span><span class="s-tag">FFmpeg</span><span class="s-tag">Puppeteer</span></div>
+    </div>
+    <div class="how-step">
+      <div class="step-n">05</div><span class="step-ico">📤</span>
+      <div class="step-title">Auto-Post</div>
+      <p class="step-body">Video posts to TikTok daily at peak engagement time — with optimized captions, hashtags, and a link to the full ranking here.</p>
+      <div class="step-tags"><span class="s-tag">TikTok API</span><span class="s-tag">Cron</span></div>
+    </div>
+  </div>
+</section>
 
-<div class="section-intro">
-<h2>Products going viral for a reason</h2>
-<p>Curated from millions of TikTok reviews, dermatologist recs, and real before-and-afters. These are the products worth every penny.</p>
-</div>
+<!-- RANKINGS — GLAMBOT REVEAL -->
+<section class="section-wrap rankings" id="rankings">
+  <div class="section-header">
+    <div>
+      <div class="s-eyebrow">// Latest Rankings</div>
+      <h2 class="s-title">Recent <span class="faded">leaderboards</span></h2>
+    </div>
+    <span class="s-count">Hover a card · Watch the reveal</span>
+  </div>
+  <div class="rankings-grid">
 
-<!-- PRODUCT CARDS -->
+    <!-- CARD 1 -->
+    <div class="rc" data-glambot>
+      <div class="rc-head">
+        <div><div class="rc-cat">Moisturizer · Dry Skin</div><div class="rc-title">Top 5 Moisturizers for Dry Skin</div></div>
+        <span class="badge trending">Trending</span>
+      </div>
+      <div class="glambot-list">
+        <div class="gl-item"><div class="gl-num">5</div><div><div class="gl-name">Vanicream Moisturizing Cream</div><div class="gl-brand">Vanicream</div></div><div class="gl-right"><div class="gl-score">89.8</div><div class="gl-delta up">▲ 1.2</div></div></div>
+        <div class="gl-item"><div class="gl-num">4</div><div><div class="gl-name">First Aid Beauty Ultra Repair</div><div class="gl-brand">First Aid Beauty</div></div><div class="gl-right"><div class="gl-score">91.2</div><div class="gl-delta up">▲ 3.4</div></div></div>
+        <div class="gl-item"><div class="gl-num">3</div><div><div class="gl-name">Neutrogena Hydro Boost</div><div class="gl-brand">Neutrogena</div></div><div class="gl-right"><div class="gl-score">94.7</div><div class="gl-delta">— 0.3</div></div></div>
+        <div class="gl-item"><div class="gl-num">2</div><div><div class="gl-name">La Roche-Posay Toleriane</div><div class="gl-brand">La Roche-Posay</div></div><div class="gl-right"><div class="gl-score">96.1</div><div class="gl-delta up">▲ 0.8</div></div></div>
+        <div class="gl-item"><div class="gl-num">1</div><div><div class="gl-name">CeraVe Moisturizing Cream</div><div class="gl-brand">CeraVe</div></div><div class="gl-right"><div class="gl-score">98.4</div><div class="gl-delta up">▲ 2.1</div></div></div>
+      </div>
+      <div class="glambot-ctrl"><button class="replay-btn" onclick="replayGlambot(this)">↺ Replay Reveal</button></div>
+      <div class="rc-foot">
+        <div class="rc-dots"><span class="rc-dot">Amazon</span><span class="rc-dot">Sephora</span><span class="rc-dot">Trends</span></div>
+        <a href="https://www.tiktok.com/@skinsignal" class="rc-watch" target="_blank">Watch →</a>
+      </div>
+    </div>
 
-<div class="products" id="products"></div>
+    <!-- CARD 2 -->
+    <div class="rc" data-glambot>
+      <div class="rc-head">
+        <div><div class="rc-cat">Serum · Brightening</div><div class="rc-title">Top 5 Vitamin C Serums by Sales</div></div>
+        <span class="badge hot">Hot</span>
+      </div>
+      <div class="glambot-list">
+        <div class="gl-item"><div class="gl-num">5</div><div><div class="gl-name">Mad Hippie Vitamin C Serum</div><div class="gl-brand">Mad Hippie</div></div><div class="gl-right"><div class="gl-score">87.6</div><div class="gl-delta up">▲ 0.5</div></div></div>
+        <div class="gl-item"><div class="gl-num">4</div><div><div class="gl-name">Paula's Choice C15 Super Booster</div><div class="gl-brand">Paula's Choice</div></div><div class="gl-right"><div class="gl-score">90.4</div><div class="gl-delta up">▲ 1.1</div></div></div>
+        <div class="gl-item"><div class="gl-num">3</div><div><div class="gl-name">Drunk Elephant C-Firma Fresh</div><div class="gl-brand">Drunk Elephant</div></div><div class="gl-right"><div class="gl-score">93.8</div><div class="gl-delta up">▲ 2.0</div></div></div>
+        <div class="gl-item"><div class="gl-num">2</div><div><div class="gl-name">TruSkin Vitamin C Serum</div><div class="gl-brand">TruSkin</div></div><div class="gl-right"><div class="gl-score">95.3</div><div class="gl-delta up">▲ 1.7</div></div></div>
+        <div class="gl-item"><div class="gl-num">1</div><div><div class="gl-name">SkinCeuticals C E Ferulic</div><div class="gl-brand">SkinCeuticals</div></div><div class="gl-right"><div class="gl-score">99.1</div><div class="gl-delta up">▲ 0.4</div></div></div>
+      </div>
+      <div class="glambot-ctrl"><button class="replay-btn" onclick="replayGlambot(this)">↺ Replay Reveal</button></div>
+      <div class="rc-foot">
+        <div class="rc-dots"><span class="rc-dot">Sephora</span><span class="rc-dot">Reddit</span><span class="rc-dot">Research</span></div>
+        <a href="https://www.tiktok.com/@skinsignal" class="rc-watch" target="_blank">Watch →</a>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="rc" data-glambot>
+      <div class="rc-head">
+        <div><div class="rc-cat">SPF · Daily Use</div><div class="rc-title">Top 5 Sunscreens — Most Repurchased</div></div>
+        <span class="badge new">New</span>
+      </div>
+      <div class="glambot-list">
+        <div class="gl-item"><div class="gl-num">5</div><div><div class="gl-name">Black Girl Sunscreen SPF 30</div><div class="gl-brand">Black Girl Sunscreen</div></div><div class="gl-right"><div class="gl-score">86.4</div><div class="gl-delta up">▲ 4.2</div></div></div>
+        <div class="gl-item"><div class="gl-num">4</div><div><div class="gl-name">Neutrogena Ultra Sheer SPF 100</div><div class="gl-brand">Neutrogena</div></div><div class="gl-right"><div class="gl-score">88.9</div><div class="gl-delta up">▲ 0.6</div></div></div>
+        <div class="gl-item"><div class="gl-num">3</div><div><div class="gl-name">La Roche-Posay Anthelios</div><div class="gl-brand">La Roche-Posay</div></div><div class="gl-right"><div class="gl-score">93.2</div><div class="gl-delta up">▲ 1.3</div></div></div>
+        <div class="gl-item"><div class="gl-num">2</div><div><div class="gl-name">Supergoop! Unseen Sunscreen</div><div class="gl-brand">Supergoop</div></div><div class="gl-right"><div class="gl-score">95.0</div><div class="gl-delta up">▲ 0.9</div></div></div>
+        <div class="gl-item"><div class="gl-num">1</div><div><div class="gl-name">EltaMD UV Clear SPF 46</div><div class="gl-brand">EltaMD</div></div><div class="gl-right"><div class="gl-score">97.6</div><div class="gl-delta up">▲ 1.8</div></div></div>
+      </div>
+      <div class="glambot-ctrl"><button class="replay-btn" onclick="replayGlambot(this)">↺ Replay Reveal</button></div>
+      <div class="rc-foot">
+        <div class="rc-dots"><span class="rc-dot">Amazon</span><span class="rc-dot">TikTok</span><span class="rc-dot">Ulta</span></div>
+        <a href="https://www.tiktok.com/@skinsignal" class="rc-watch" target="_blank">Watch →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DATA SOURCES -->
+<section class="section-wrap sources" id="sources">
+  <div class="section-header">
+    <div>
+      <div class="s-eyebrow">// Methodology</div>
+      <h2 class="s-title">Where the <span class="faded">data comes from</span></h2>
+    </div>
+  </div>
+  <div class="src-grid">
+    <div class="src-card"><span class="src-ico">🛒</span><div class="src-name">Amazon</div><p class="src-desc">Bestseller ranks, review volumes, star ratings, and repurchase patterns across Beauty & Personal Care.</p><div class="src-metric">↗ Updated hourly</div></div>
+    <div class="src-card"><span class="src-ico">💄</span><div class="src-name">Sephora / Ulta</div><p class="src-desc">Retailer bestseller lists, "loves" counts, community ratings, and editorial picks from both major beauty retailers.</p><div class="src-metric">↗ Updated daily</div></div>
+    <div class="src-card"><span class="src-ico">📈</span><div class="src-name">Google Trends</div><p class="src-desc">Search volume for product names, ingredients, and goals — segmented by region and time window.</p><div class="src-metric">↗ Weekly cadence</div></div>
+    <div class="src-card"><span class="src-ico">💬</span><div class="src-name">Reddit / TikTok</div><p class="src-desc">Mention volume from r/SkincareAddiction, r/AsianBeauty, and TikTok hashtag analytics for organic buzz.</p><div class="src-metric">↗ Real-time</div></div>
+    <div class="src-card"><span class="src-ico">🔬</span><div class="src-name">Research</div><p class="src-desc">PubMed and dermatology journals validate ingredient efficacy — so rankings reflect science, not just sales.</p><div class="src-metric">↗ Peer-reviewed</div></div>
+  </div>
+</section>
 
 <!-- CTA -->
-
-<div class="cta-section">
-<h3>Want the <em>full routine?</em></h3>
-<p style="color:var(--muted); margin-bottom:1.5rem; font-size:0.9rem;">Follow for weekly drops, dupes, and honest reviews.</p>
-<button class="cta-btn">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.18 8.18 0 0 0 4.78 1.52V7a4.85 4.85 0 0 1-1.01-.31z"/></svg>
-Follow @GlowTok
-</button>
-</div>
+<section class="cta">
+  <div class="cta-bg">Signal</div>
+  <div>
+    <h2 class="cta-title">Get the<br><span class="accent">weekly</span><br>signal</h2>
+    <p class="cta-body">Every Sunday: the <strong>top-ranked products of the week</strong> across every category — with the raw numbers behind each score. No sponsored products. No ads. Ever.</p>
+    <div class="email-form">
+      <div class="form-row">
+        <input class="email-input" type="email" placeholder="your@email.com" />
+        <button class="email-btn">Subscribe →</button>
+      </div>
+      <p class="form-note">Weekly only. Unsubscribe anytime. We never feature sponsored products.</p>
+    </div>
+  </div>
+  <div class="format-list">
+    <div class="format-item"><div class="f-ico">🏆</div><div class="f-info"><div class="f-name">Top 5 / Top 10 Rankings</div><div class="f-desc">Data-ranked product lists for a specific skin goal — moisture, brightening, acne, SPF, anti-aging.</div></div><div class="f-freq">Daily</div></div>
+    <div class="format-item"><div class="f-ico">⚔️</div><div class="f-info"><div class="f-name">Head-to-Head Comparisons</div><div class="f-desc">Two cult products, compared across 5 data points. The numbers decide the winner.</div></div><div class="f-freq">2× / week</div></div>
+    <div class="format-item"><div class="f-ico">📊</div><div class="f-info"><div class="f-name">Trend Reports</div><div class="f-desc">What's rising, what's falling — ingredient and product trends backed by search + sales data.</div></div><div class="f-freq">Weekly</div></div>
+    <div class="format-item"><div class="f-ico">💰</div><div class="f-info"><div class="f-name">Budget vs Luxury</div><div class="f-desc">When the $12 drugstore product outperforms the $80 one — we show the receipts.</div></div><div class="f-freq">Weekly</div></div>
+  </div>
+</section>
 
 <!-- FOOTER -->
-
 <footer>
-<div class="logo">GlowTok</div>
-<div class="socials">
-<a href="#">TikTok</a>
-<a href="#">Instagram</a>
-<a href="#">YouTube</a>
-<a href="#">Pinterest</a>
-</div>
-<p>© 2025 GlowTok — Skincare content for educational purposes only. Always patch test.</p>
+  <div>
+    <div class="f-logo"><em>Skin</em><span>Signal</span></div>
+    <div class="f-tag">// Data-Driven Skincare Rankings</div>
+  </div>
+  <div class="f-links">
+    <a href="https://www.tiktok.com/@skinsignal" target="_blank">TikTok</a>
+    <a href="#rankings">Rankings</a>
+    <a href="#how">How It Works</a>
+    <a href="#sources">Data Sources</a>
+  </div>
+  <div>
+    <div class="f-copy">© 2026 Skin Signal. All rights reserved.</div>
+    <div class="f-note">No sponsorships. No opinions. Just signal.</div>
+  </div>
 </footer>
 
 <script>
-const products = [
-{
-rank: 1,
-category: "Moisturizer",
-name: "Barrier Repair Cream",
-brand: "La Roche-Posay · Cicaplast Baume B5",
-desc: "The TikTok-famous healing balm that rescues angry, stripped skin overnight. Dermatologists call it a \"skin bandage.\"",
-price: "$15",
-rating: 5,
-bg: "#fde8e0",
-emoji: "🧴"
-},
-{
-rank: 2,
-category: "Serum",
-name: "Hyaluronic Acid Serum",
-brand: "The Ordinary · 2% HA + B5",
-desc: "A budget-friendly hydration powerhouse. Plumps skin with multi-weight hyaluronic acid for dewy, glass-skin results.",
-price: "$9",
-rating: 5,
-bg: "#e0edf2",
-emoji: "💧"
-},
-{
-rank: 3,
-category: "Sunscreen",
-name: "Invisible Sunscreen SPF 50",
-brand: "ISDIN · Eryfotona Actinica",
-desc: "Zero white cast, zero excuses. This mineral-chemical hybrid melts right in and pairs perfectly under makeup.",
-price: "$55",
-rating: 5,
-bg: "#fff9e6",
-emoji: "☀️"
-},
-{
-rank: 4,
-category: "Retinol",
-name: "Granactive Retinoid 2%",
-brand: "The Ordinary · Emulsion",
-desc: "All the anti-aging results, none of the peeling. A gentler retinoid that even sensitive skin can get behind.",
-price: "$11",
-rating: 4,
-bg: "#f2e0f0",
-emoji: "✨"
-},
-{
-rank: 5,
-category: "Cleanser",
-name: "Gentle Foaming Cleanser",
-brand: "CeraVe · Hydrating Facial",
-desc: "The OG drugstore holy grail. Ceramides, niacinamide, and hyaluronic acid in a wash-off formula. Never strips.",
-price: "$18",
-rating: 5,
-bg: "#e0f0ea",
-emoji: "🫧"
-},
-{
-rank: 6,
-category: "Eye Cream",
-name: "Caffeine Eye Serum",
-brand: "The Ordinary · Caffeine Solution 5%",
-desc: "Puffy under-eyes, meet your match. Caffeine + EGCG visibly depuffs and brightens the most stubborn dark circles.",
-price: "$9",
-rating: 4,
-bg: "#e6e0f5",
-emoji: "👁️"
-},
-{
-rank: 7,
-category: "Exfoliant",
-name: "BHA Blackhead Power",
-brand: "COSRX · BHA Blackhead Power Liquid",
-desc: "Korean skincare's secret weapon. Betaine salicylate dissolves blackheads and refines pores without overdrying.",
-price: "$25",
-rating: 5,
-bg: "#f5ede0",
-emoji: "🌿"
-},
-{
-rank: 8,
-category: "Vitamin C",
-name: "15% Vitamin C + E Ferulic",
-brand: "Paula's Choice · C15 Super Booster",
-desc: "Clinical-grade brightening. This potent cocktail visibly fades hyperpigmentation and boosts SPF effectiveness.",
-price: "$65",
-rating: 5,
-bg: "#fff3e0",
-emoji: "🍊"
-},
-{
-rank: 9,
-category: "Sheet Mask",
-name: "Water Bomb Mask",
-brand: "Belif · True Cream Aqua Bomb",
-desc: "20 minutes for a week's worth of hydration. The bouncy texture and cooling sensation are genuinely addictive.",
-price: "$38",
-rating: 4,
-bg: "#e0f2f5",
-emoji: "💦"
-},
-{
-rank: 10,
-category: "Lip Treatment",
-name: "Peptide Lip Butter Balm",
-brand: "Summer Fridays · Lip Butter Balm",
-desc: "The #BeautyTok obsession with a cult following. Flavors, glossy finish, and actual lip conditioning in one.",
-price: "$22",
-rating: 5,
-bg: "#fce8ee",
-emoji: "💋"
-}
-];
+  // ── GLAMBOT REVEAL ENGINE ──
+  // Staggered reveal starting from #5 down to #1, each with a dramatic entrance
+  // Delays increase as we approach #1 — building the tension like a glambot countdown
 
-const grid = document.getElementById('products');
+  const STAGGER_BASE  = 600;   // ms between each item
+  const STAGGER_RAMP  = 150;   // extra ms added per step (slows down toward #1)
+  const ITEM_DURATION = 1200;  // animation duration in ms (matches CSS)
 
-products.forEach(p => {
-const stars = '★'.repeat(p.rating) + '☆'.repeat(5 - p.rating);
-grid.innerHTML += `
-<div class="card">
-<div class="card-img" style="background:${p.bg}">
-<span class="card-rank">${String(p.rank).padStart(2,'0')}</span>
-<span style="font-size:3.5rem; position:relative; z-index:2">${p.emoji}</span>
-</div>
-<div class="card-body">
-<div class="tiktok-badge">
-<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.18 8.18 0 0 0 4.78 1.52V7a4.85 4.85 0 0 1-1.01-.31z"/></svg>
-Viral Pick
-</div>
-<div class="card-category">${p.category}</div>
-<h3 class="card-name">${p.name}</h3>
-<p class="card-brand">${p.brand}</p>
-<p class="card-desc">${p.desc}</p>
-<div class="card-footer">
-<span class="card-price">${p.price}</span>
-<div class="card-rating">${stars}</div>
-</div>
-</div>
-</div>
-`;
-});
+  function runGlambot(card) {
+    const items = card.querySelectorAll('.gl-item');
+    items.forEach(el => {
+      el.classList.remove('revealed');
+      el.style.animationDelay = '';
+    });
+
+    let cumulative = 200;
+    items.forEach((item, i) => {
+      // i=0 is #5, i=4 is #1 — ramp slows down as we approach #1
+      const extra = i * STAGGER_RAMP;
+      const delay = cumulative + extra;
+      cumulative = delay + STAGGER_BASE;
+
+      setTimeout(() => {
+        item.classList.add('revealed');
+      }, delay);
+    });
+  }
+
+  function replayGlambot(btn) {
+    const card = btn.closest('[data-glambot]');
+    runGlambot(card);
+  }
+
+  // Auto-trigger when card scrolls into view (IntersectionObserver)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        runGlambot(entry.target);
+        observer.unobserve(entry.target); // only auto-trigger once
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('[data-glambot]').forEach(card => {
+    observer.observe(card);
+  });
 </script>
 
 </body>
